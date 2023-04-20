@@ -16,8 +16,14 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
+import CalIcon from "@mui/icons-material/CalendarMonth";
 import MailIcon from "@mui/icons-material/Mail";
+import StarIcon from "@mui/icons-material/Star";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import SendIcon from "@mui/icons-material/Send";
+import WarningIcon from "@mui/icons-material/Warning";
+import CriticalIcon from "@mui/icons-material/FireExtinguisher";
 
 const drawerWidth = 240;
 
@@ -121,26 +127,33 @@ export default function PersistentDrawerLeft() {
         </DrawerHeader>
         <Divider />
         <List>
-          {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-            <ListItem key={text} disablePadding>
+          {[
+            { label: "Inbox", icon: <MailIcon /> },
+            { label: "Starred", icon: <StarIcon /> },
+            { label: "Send email", icon: <SendIcon /> },
+            { label: "Drafts", icon: <EditIcon /> },
+          ].map(({ label, icon }, index) => (
+            <ListItem key={label} disablePadding>
               <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
+                <ListItemIcon>{icon}</ListItemIcon>
+                <ListItemText primary={label} />
               </ListItemButton>
             </ListItem>
           ))}
         </List>
         <Divider />
         <List>
-          {["All mail", "Trash", "Spam"].map((text, index) => (
-            <ListItem key={text} disablePadding>
+          {[
+            { label: "All Mail", icon: <MailIcon /> },
+            { label: "Meeting", icon: <CalIcon /> },
+            { label: "Critical", icon: <CriticalIcon /> },
+            { label: "Trash", icon: <DeleteIcon /> },
+            { label: "Spam", icon: <WarningIcon /> },
+          ].map(({ label, icon }, index) => (
+            <ListItem key={label} disablePadding>
               <ListItemButton>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={text} />
+                <ListItemIcon>{icon}</ListItemIcon>
+                <ListItemText primary={label} />
               </ListItemButton>
             </ListItem>
           ))}
