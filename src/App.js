@@ -7,6 +7,11 @@ const darkTheme = createTheme({
   palette: {
     mode: "dark",
   },
+  typography: {
+    allVariants: {
+      color: "#bda7eb",
+    },
+  },
 });
 
 function App() {

@@ -26,7 +26,7 @@ export default function Emails({ emails }) {
   };
 
   return (
-    <Card style={{ width: "85%" }}>
+    <Card style={{ width: "94%" }}>
       <List sx={{ width: "100%", bgcolor: "rgba(66, 64, 64, 0.088)" }}>
         {emails.map(({ flag, sender, subject, body }, value) => {
           const labelId = `checkbox-list-label-${sender}`;
@@ -57,7 +57,11 @@ export default function Emails({ emails }) {
                   />
                 </ListItemIcon>
 
-                <ListItemText style={{ flex: 1 }} primary={sender} />
+                <ListItemText
+                  className="strong"
+                  style={{ flex: 1 }}
+                  primary={<span className="strong">{sender}</span>}
+                />
                 {flag ? <EmojiFlagsIcon color={flag} /> : null}
                 <ListItemText
                   style={{
@@ -72,7 +76,7 @@ export default function Emails({ emails }) {
                   primary={
                     <Typography variant="body2" noWrap>
                       {" "}
-                      <b>{subject}</b> {body}
+                      <span className="strong">{subject}</span> {body}
                     </Typography>
                   }
                 />

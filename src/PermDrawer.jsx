@@ -25,13 +25,9 @@ import WarningIcon from "@mui/icons-material/Warning";
 import CriticalIcon from "@mui/icons-material/FireExtinguisher";
 import Emails from "./Emails";
 import { dataBuilder } from "./data";
-import {
-  Grid,
-  TablePagination,
-  TextField,
-  InputAdornment,
-} from "@mui/material";
+import { Grid, TextField, InputAdornment } from "@mui/material";
 import { Redeem, Search } from "@mui/icons-material";
+import CustomPagination from "./CustomPagination";
 
 const drawerWidth = 190;
 function timeout(delay) {
@@ -88,10 +84,9 @@ export default function PersistentDrawerLeft() {
   const [emails, setEmails] = React.useState(dataBuilder(83));
   React.useEffect(() => {
     const goAction = async () => {
-      setSearch("");
       await timeout(2000);
-      setEmails((prev) => [...dataBuilder(4), ...prev]);
-      await timeout(1500);
+      setEmails((prev) => [...dataBuilder(1), ...prev]);
+      await timeout(1300);
       setEmails((prev) => [...dataBuilder(2), ...prev]);
       await timeout(1200);
       setEmails((prev) => [...dataBuilder(2), ...prev]);
@@ -101,6 +96,8 @@ export default function PersistentDrawerLeft() {
     const goAgain = async () => {
       setEmails(dataBuilder(177));
       await timeout(2000);
+      timeout(0).then(goAction);
+      timeout(400).then(goAction);
       timeout(9).then(goAction);
       timeout(1).then(goAction);
       timeout(123).then(goAction);
@@ -109,22 +106,21 @@ export default function PersistentDrawerLeft() {
     };
     if (search === "action") {
       setSearch("");
+      if (emails.length !== 83) {
+        setEmails(dataBuilder(83));
+      }
       goAction();
-    }
-    if (search === "reset") {
-      setSearch("");
-      setEmails(dataBuilder(83));
     }
     if (search === "again") {
       setSearch("");
       goAgain();
     }
-  }, [search, setEmails]);
+  }, [search, emails, setEmails]);
 
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar style={{ backgroundColor: "#030047" }} position="fixed" open>
+      <AppBar style={{ backgroundColor: "#1c0120" }} position="fixed" open>
         <Toolbar>
           <Grid container justifyContent="space-between">
             <TextField
@@ -142,7 +138,7 @@ export default function PersistentDrawerLeft() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
-            <TablePagination
+            <CustomPagination
               style={{ color: "white" }}
               component="div"
               count={(emails.length || 0) + 98}
@@ -169,7 +165,7 @@ export default function PersistentDrawerLeft() {
       >
         <DrawerHeader>
           <Grid container alignItems={"center"}>
-            <Redeem />
+            <Redeem style={{ marginRight: "5px" }} />
             <Typography variant="h6" noWrap component="div">
               {"    "}
               Parcel Out
@@ -187,8 +183,18 @@ export default function PersistentDrawerLeft() {
         <Divider />
         <List>
           {[
-            { label: <b>Inbox ({emails.length})</b>, icon: <MailIcon /> },
-            { label: "Starred", icon: <StarIcon /> },
+            {
+              label: <span className="strong">Inbox ({emails.length})</span>,
+              icon: <MailIcon />,
+            },
+            {
+              label: (
+                <span className="strong">
+                  Critical ({Math.round(emails.length * 0.9)})
+                </span>
+              ),
+              icon: <CriticalIcon />,
+            },
             { label: "Send email", icon: <SendIcon /> },
             { label: "Drafts", icon: <EditIcon /> },
           ].map(({ label, icon }, index) => (
@@ -204,8 +210,8 @@ export default function PersistentDrawerLeft() {
         <List>
           {[
             { label: "All Mail", icon: <MailIcon /> },
+            { label: "Starred", icon: <StarIcon /> },
             { label: "Meeting", icon: <CalIcon /> },
-            { label: "Critical", icon: <CriticalIcon /> },
             { label: "Trash", icon: <DeleteIcon /> },
             { label: "Spam", icon: <WarningIcon /> },
           ].map(({ label, icon }, index) => (
