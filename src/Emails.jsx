@@ -7,10 +7,10 @@ import ListItemText from "@mui/material/ListItemText";
 import Checkbox from "@mui/material/Checkbox";
 import IconButton from "@mui/material/IconButton";
 import CommentIcon from "@mui/icons-material/Comment";
-import { Card, TablePagination } from "@mui/material";
-
-export default function Emails() {
-  const [checked, setChecked] = React.useState([0]);
+import { Card, Typography } from "@mui/material";
+import EmojiFlagsIcon from "@mui/icons-material/EmojiFlagsTwoTone";
+export default function Emails({ emails }) {
+  const [checked, setChecked] = React.useState([]);
 
   const handleToggle = (value) => () => {
     const currentIndex = checked.indexOf(value);
@@ -27,22 +27,14 @@ export default function Emails() {
 
   return (
     <Card style={{ width: "85%" }}>
-      <TablePagination
-        component="div"
-        count={100}
-        page={1}
-        //   onPageChange={handleChangePage}
-        rowsPerPage={25}
-        //   onRowsPerPageChange={handleChangeRowsPerPage}
-      />
-      <List sx={{ width: "100%", bgcolor: "background.paper" }}>
-        {[0, 1, 2, 3].map((value) => {
-          const labelId = `checkbox-list-label-${value}`;
+      <List sx={{ width: "100%", bgcolor: "rgba(66, 64, 64, 0.088)" }}>
+        {emails.map(({ flag, sender, subject, body }, value) => {
+          const labelId = `checkbox-list-label-${sender}`;
 
           return (
             <ListItem
               dense
-              key={value}
+              key={labelId}
               secondaryAction={
                 <IconButton edge="end" aria-label="comments">
                   <CommentIcon />
@@ -64,11 +56,25 @@ export default function Emails() {
                     inputProps={{ "aria-labelledby": labelId }}
                   />
                 </ListItemIcon>
-                <ListItemText style={{ flex: 1 }} primary={"something here"} />
+
+                <ListItemText style={{ flex: 1 }} primary={sender} />
+                {flag ? <EmojiFlagsIcon color={flag} /> : null}
                 <ListItemText
-                  style={{ flex: 3 }}
+                  style={{
+                    flex: 3,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis !important",
+                    whiteSpace: "nowrap !important",
+                    alignItems: "center",
+                    display: "flex",
+                  }}
                   id={labelId}
-                  primary={`Line item ${value + 1}`}
+                  primary={
+                    <Typography variant="body2" noWrap>
+                      {" "}
+                      <b>{subject}</b> {body}
+                    </Typography>
+                  }
                 />
               </ListItemButton>
             </ListItem>

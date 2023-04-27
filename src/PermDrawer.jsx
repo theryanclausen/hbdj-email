@@ -9,7 +9,6 @@ import List from "@mui/material/List";
 import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ListItem from "@mui/material/ListItem";
@@ -25,9 +24,19 @@ import SendIcon from "@mui/icons-material/Send";
 import WarningIcon from "@mui/icons-material/Warning";
 import CriticalIcon from "@mui/icons-material/FireExtinguisher";
 import Emails from "./Emails";
+import { dataBuilder } from "./data";
+import {
+  Grid,
+  TablePagination,
+  TextField,
+  InputAdornment,
+} from "@mui/material";
+import { Redeem, Search } from "@mui/icons-material";
 
-const drawerWidth = 240;
-
+const drawerWidth = 190;
+function timeout(delay) {
+  return new Promise((res) => setTimeout(res, delay));
+}
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme, open }) => ({
     flexGrow: 1,
@@ -75,33 +84,74 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 export default function PersistentDrawerLeft() {
   const theme = useTheme();
-  const [open, setOpen] = React.useState(true);
-
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
+  const [search, setSearch] = React.useState("");
+  const [emails, setEmails] = React.useState(dataBuilder(83));
+  React.useEffect(() => {
+    const goAction = async () => {
+      setSearch("");
+      await timeout(2000);
+      setEmails((prev) => [...dataBuilder(4), ...prev]);
+      await timeout(1500);
+      setEmails((prev) => [...dataBuilder(2), ...prev]);
+      await timeout(1200);
+      setEmails((prev) => [...dataBuilder(2), ...prev]);
+      await timeout(1100);
+      setEmails((prev) => [...dataBuilder(2), ...prev]);
+    };
+    const goAgain = async () => {
+      setEmails(dataBuilder(177));
+      await timeout(2000);
+      timeout(9).then(goAction);
+      timeout(1).then(goAction);
+      timeout(123).then(goAction);
+      timeout(13).then(goAction);
+      timeout(323).then(goAction);
+    };
+    if (search === "action") {
+      setSearch("");
+      goAction();
+    }
+    if (search === "reset") {
+      setSearch("");
+      setEmails(dataBuilder(83));
+    }
+    if (search === "again") {
+      setSearch("");
+      goAgain();
+    }
+  }, [search, setEmails]);
 
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar position="fixed" open={open}>
+      <AppBar style={{ backgroundColor: "#030047" }} position="fixed" open>
         <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            onClick={handleDrawerOpen}
-            edge="start"
-            sx={{ mr: 2, ...(open && { display: "none" }) }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            <MailIcon /> E-Parcel
-          </Typography>
+          <Grid container justifyContent="space-between">
+            <TextField
+              style={{ width: "33%" }}
+              variant="outlined"
+              color="primary"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search />
+                  </InputAdornment>
+                ),
+              }}
+              placeholder="Search Mail"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+            <TablePagination
+              style={{ color: "white" }}
+              component="div"
+              count={(emails.length || 0) + 98}
+              page={1}
+              onPageChange={() => {}}
+              rowsPerPage={25}
+              onRowsPerPageChange={() => {}}
+            />
+          </Grid>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -115,10 +165,18 @@ export default function PersistentDrawerLeft() {
         }}
         variant="persistent"
         anchor="left"
-        open={open}
+        open
       >
         <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
+          <Grid container alignItems={"center"}>
+            <Redeem />
+            <Typography variant="h6" noWrap component="div">
+              {"    "}
+              Parcel Out
+            </Typography>
+          </Grid>
+
+          <IconButton>
             {theme.direction === "ltr" ? (
               <ChevronLeftIcon />
             ) : (
@@ -129,7 +187,7 @@ export default function PersistentDrawerLeft() {
         <Divider />
         <List>
           {[
-            { label: "Inbox", icon: <MailIcon /> },
+            { label: <b>Inbox ({emails.length})</b>, icon: <MailIcon /> },
             { label: "Starred", icon: <StarIcon /> },
             { label: "Send email", icon: <SendIcon /> },
             { label: "Drafts", icon: <EditIcon /> },
@@ -161,9 +219,9 @@ export default function PersistentDrawerLeft() {
         </List>
       </Drawer>
 
-      <Main open={open}>
+      <Main open>
         <DrawerHeader />
-        <Emails />
+        <Emails emails={emails} />
       </Main>
     </Box>
   );
